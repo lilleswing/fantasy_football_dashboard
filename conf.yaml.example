@@ -1,0 +1,23 @@
+espn:
+  espn_s2: "foo"
+  swid: "bar"
+
+yahoo:
+  website: "https://developer.yahoo.com/apps/wZQVWA0G/"
+  app_id: "foo"
+  consumer_key: "foo"
+  consumer_secret: "bar"
+
+leagues:
+  - league_id: 657631
+    league_name: "lechuga"
+    website: "yahoo"
+  - league_id: 960988
+    league_name: "slingers_dingers"
+    website: "yahoo"
+  - league_id: 2090500312
+    league_name: "boys_boys"
+    website: "espn"
+  - league_id: 1072753435
+    league_name: "work"
+    website: "espn"
