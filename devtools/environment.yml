@@ -2,7 +2,12 @@ name: football
 channels:
   - conda-forge
 dependencies:
+  - pip:
+    - yfpy
+    - nfl_data_py
+    - espn_api
   - conda-forge::python>=3.9
   - conda-forge::pytest
   - conda-forge::requests
   - conda-forge::pandas
+  - conda-forge::pip
