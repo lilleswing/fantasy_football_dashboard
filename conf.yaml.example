@@ -12,12 +12,16 @@ leagues:
   - league_id: 657631
     league_name: "lechuga"
     website: "yahoo"
+    ppr: "half"
   - league_id: 960988
     league_name: "slingers_dingers"
     website: "yahoo"
+    ppr: "half"
   - league_id: 2090500312
     league_name: "boys_boys"
     website: "espn"
+    ppr: "full"
   - league_id: 1072753435
     league_name: "work"
     website: "espn"
+    ppr: "full"
