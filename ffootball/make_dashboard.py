@@ -33,6 +33,11 @@ def add_rostered_players(df, fname):
     my_df['is_rostered'] = [x in rostered_players for x in my_df['Name']]
     my_df.to_html(f"scr/{fname}.html")
 
+    unrostered = my_df[~my_df['is_rostered']]
+    unrostered = unrostered[unrostered['games_played_2023'] >= 1]
+    unrostered = unrostered.sort_values('ADV_2023', ascending=False)
+    unrostered.to_html(f"scr/{fname}_unrostered.html")
+
 
 def calculate_advs(weekly_data, is_ppr, league_name):
     """
