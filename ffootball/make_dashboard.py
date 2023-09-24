@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import copy
 
-from ffootball.get_rosters import get_secrets
+from ffootball.get_rosters import get_secrets, save_rosters
 
 
 def bootstrap_median(weekly_data, score_column, player_name, window=6):
@@ -78,6 +78,7 @@ def calculate_advs(weekly_data, is_ppr, league_name):
 
 
 def main():
+    save_rosters()
     weekly_data = nfl.import_weekly_data(years=[2022, 2023])
     weekly_data = weekly_data.sort_values('fantasy_points', ascending=False)
     weekly_data = weekly_data.sort_values(['season', 'week'])
