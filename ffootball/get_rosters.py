@@ -49,7 +49,7 @@ def get_rostered_players_yahoo(league_id, output_fname):
     for team_id in range(1, len(teams) + 1):
         team_rosters = yahoo_query.get_team_roster_by_week(team_id, 16)
         for p in team_rosters.players:
-            rostered_players.append(get_player_name(p['player'].name))
+            rostered_players.append(get_player_name(p.name))
     df = pd.DataFrame({
         "Name": rostered_players
     })
@@ -75,8 +75,8 @@ def get_rostered_players_espn(league_id, output_fname):
 
 
 def save_rosters():
-    if not os.path.exists('../scr'):
-        os.makedirs('../scr')
+    if not os.path.exists('scr'):
+        os.makedirs('scr')
 
     secrets = get_secrets()
     for league in secrets['leagues']:

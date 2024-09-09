@@ -6,7 +6,7 @@ import copy
 from ffootball.get_rosters import get_secrets, save_rosters
 
 
-def bootstrap_median(weekly_data, score_column, player_name, window=6):
+def bootstrap_median(weekly_data, score_column, player_name, window=1):
     player_df = weekly_data[weekly_data['player_display_name'] == player_name]
     last_6 = player_df[score_column].values[-1 * window:]
     if len(last_6) == 0:
@@ -18,7 +18,7 @@ def bootstrap_median(weekly_data, score_column, player_name, window=6):
 
 def bootstrap_2023(weekly_data, score_column, player_name, window=6):
     player_df = weekly_data[weekly_data['player_display_name'] == player_name]
-    last_6 = player_df[player_df['season'] == 2023][score_column].values
+    last_6 = player_df[player_df['season'] == 2024][score_column].values
     if len(last_6) == 0:
         return 0, 0, 0
     bootstraps = np.random.choice(last_6, size=(100, window))
@@ -78,8 +78,8 @@ def calculate_advs(weekly_data, is_ppr, league_name):
 
 
 def main():
-    save_rosters()
-    weekly_data = nfl.import_weekly_data(years=[2022, 2023])
+    #save_rosters()
+    weekly_data = nfl.import_weekly_data(years=[2024])
     weekly_data = weekly_data.sort_values('fantasy_points', ascending=False)
     weekly_data = weekly_data.sort_values(['season', 'week'])
     weekly_data['half_ppr'] = [(x + y) / 2 for x, y in
