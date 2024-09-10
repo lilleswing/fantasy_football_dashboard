@@ -25,7 +25,7 @@ def bootstrap_2023(weekly_data, score_column, player_name, window=1):
         return 0, 0, 0
     bootstraps = np.random.choice(last_6, size=(100, window))
     means = np.mean(bootstraps, axis=1)
-    return np.median(means), np.std(means), len(last_6)
+    return last_6[-1], np.std(means), len(last_6)
 
 
 def add_rostered_players(df, fname):
@@ -36,8 +36,8 @@ def add_rostered_players(df, fname):
     my_df.to_html(f"scr/{fname}.html")
 
     unrostered = my_df[~my_df['is_rostered']]
-    unrostered = unrostered[unrostered['games_played_2023'] >= 1]
-    unrostered = unrostered.sort_values('ADV_2023', ascending=False)
+    unrostered = unrostered[unrostered['games_played_2024'] >= 1]
+    unrostered = unrostered.sort_values('Last Game', ascending=False)
     unrostered.to_html(f"scr/{fname}_unrostered.html")
     unrostered.to_csv(f"scr/{fname}_unrostered.csv")
 
@@ -73,9 +73,9 @@ def calculate_advs(weekly_data, is_ppr, league_name):
     for k in player_adv.keys():
         row = [k, position_lookup[k], *player_adv[k], *player_adv_2023[k]]
         table.append(row)
-    player_adv_df = pd.DataFrame(table, columns=['Name', 'position', 'ADV', 'variance', 'games_played', 'ADV_2023',
-                                                 'variance_2023', 'games_played_2023'])
-    player_adv_df = player_adv_df.sort_values('ADV_2023', ascending=False)
+    player_adv_df = pd.DataFrame(table, columns=['Name', 'position', 'Last_6_Average', 'variance', 'games_played', 'Last Game',
+                                                 'variance_2024', 'games_played_2024'])
+    player_adv_df = player_adv_df.sort_values('Last Game', ascending=False)
     player_adv_df['rank'] = [x + 1 for x in range(len(player_adv_df))]
     add_rostered_players(player_adv_df, league_name)
 
@@ -87,7 +87,7 @@ def upload_sheets():
     secrets = get_secrets()
     for league in secrets['leagues']:
         spreadsheet = client.open(league['gsheet_name'])
-        csv_name = f"{league['league_name']}_unrostered.csv"
+        csv_name = f"scr/{league['league_name']}_unrostered.csv"
         df = pd.read_csv(csv_name)
         data = [df.columns.values.tolist()] + df.values.tolist()
         worksheet_name = f'Unrostered {nonce}'
