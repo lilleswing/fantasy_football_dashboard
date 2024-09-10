@@ -1,0 +1,6 @@
+yfpy
+nfl_data_py
+espn_api
+requests
+pandas
+flask

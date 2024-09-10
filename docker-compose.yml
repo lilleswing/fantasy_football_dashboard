@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: ffootball
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./ffootball/:/app/ffootball
+    ports:
+      - 5000:5000
+    command: ["python", "ffootball/app.py"]
+

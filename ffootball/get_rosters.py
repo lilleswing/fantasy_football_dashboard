@@ -13,6 +13,8 @@ def strip_title_from_name(s):
     """
     s = s.replace(' Jr.', '')
     s = s.replace(" III", '')
+    s = s.replace(" II", '')
+    s = s.replace("'", '')
     return s
 
 
@@ -57,7 +59,7 @@ def get_rostered_players_yahoo(league_id, output_fname):
 
 
 def get_rostered_players_espn(league_id, output_fname):
-    year = 2023
+    year = 2024
     secrets = get_secrets()
     espn_s2 = secrets['espn']['espn_s2']
     swid = secrets['espn']['swid']
