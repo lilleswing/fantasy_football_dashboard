@@ -4,3 +4,4 @@ espn_api
 requests
 pandas
 flask
+gspread

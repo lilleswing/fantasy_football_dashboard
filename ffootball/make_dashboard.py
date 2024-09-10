@@ -1,7 +1,9 @@
 import nfl_data_py as nfl
+import datetime
 import pandas as pd
 import numpy as np
 import copy
+import gspread
 
 from ffootball.get_rosters import get_secrets, save_rosters, strip_title_from_name
 
@@ -78,6 +80,21 @@ def calculate_advs(weekly_data, is_ppr, league_name):
     add_rostered_players(player_adv_df, league_name)
 
 
+def upload_sheets():
+    client = gspread.service_account('secrets/google.json')
+    nonce = str(datetime.datetime.now())
+
+    secrets = get_secrets()
+    for league in secrets['leagues']:
+        spreadsheet = client.open(league['gsheet_name'])
+        csv_name = f"{league['league_name']}_unrostered.csv"
+        df = pd.read_csv(csv_name)
+        data = [df.columns.values.tolist()] + df.values.tolist()
+        worksheet_name = f'Unrostered {nonce}'
+        worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=str(len(data)), cols=str(len(data[0])))
+        worksheet.update(data)
+
+
 def main():
     save_rosters()
     weekly_data = nfl.import_weekly_data(years=[2023, 2024])
@@ -89,7 +106,7 @@ def main():
     secrets = get_secrets()
     for league in secrets['leagues']:
         calculate_advs(weekly_data, league['ppr'], league['league_name'])
-
+    upload_sheets()
 
 if __name__ == "__main__":
     main()

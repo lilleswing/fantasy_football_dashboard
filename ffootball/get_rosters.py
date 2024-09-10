@@ -26,7 +26,7 @@ def get_player_name(player_name):
 
 
 def get_secrets():
-    with open("conf.yaml") as f:
+    with open("secrets/conf.yaml") as f:
         data = yaml.load(f, Loader=yaml.FullLoader)
         return data
 
