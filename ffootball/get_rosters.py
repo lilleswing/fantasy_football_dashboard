@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pandas as pd
 import yaml
@@ -32,18 +33,19 @@ def get_secrets():
 
 
 def get_rostered_players_yahoo(league_id, output_fname):
-    auth_dir = './'
+    os.makedirs('yahoo_token', exist_ok=True)
     d = get_secrets()
     yahoo_query = YahooFantasySportsQuery(
-        auth_dir,
         league_id,
         game_id=None,
         game_code="nfl",
         offline=False,
         all_output_as_json_str=False,
-        consumer_key=d['yahoo']['consumer_key'],
-        consumer_secret=d['yahoo']['consumer_secret'],
-        browser_callback=True
+        yahoo_consumer_key=d['yahoo']['consumer_key'],
+        yahoo_consumer_secret=d['yahoo']['consumer_secret'],
+        browser_callback=True,
+        env_file_location=Path('./yahoo_token'),
+        save_token_data_to_env_file=True
     )
     teams = yahoo_query.get_league_teams()
 
@@ -59,7 +61,7 @@ def get_rostered_players_yahoo(league_id, output_fname):
 
 
 def get_rostered_players_espn(league_id, output_fname):
-    year = 2024
+    year = 2025
     secrets = get_secrets()
     espn_s2 = secrets['espn']['espn_s2']
     swid = secrets['espn']['swid']
