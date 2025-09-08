@@ -7,6 +7,7 @@ import gspread
 
 from ffootball.get_rosters import get_secrets, save_rosters, strip_title_from_name
 
+current_season = 2024
 
 def bootstrap_median(weekly_data, score_column, player_name, window=6):
     player_df = weekly_data[weekly_data['player_display_name'] == player_name]
@@ -20,7 +21,7 @@ def bootstrap_median(weekly_data, score_column, player_name, window=6):
 
 def bootstrap_2023(weekly_data, score_column, player_name, window=1):
     player_df = weekly_data[weekly_data['player_display_name'] == player_name]
-    last_6 = player_df[player_df['season'] == 2024][score_column].values
+    last_6 = player_df[player_df['season'] == current_season][score_column].values
     if len(last_6) == 0:
         return 0, 0, 0
     bootstraps = np.random.choice(last_6, size=(100, window))
@@ -36,7 +37,7 @@ def add_rostered_players(df, fname):
     my_df.to_html(f"scr/{fname}.html")
 
     unrostered = my_df[~my_df['is_rostered']]
-    unrostered = unrostered[unrostered['games_played_2024'] >= 1]
+    unrostered = unrostered[unrostered[f'games_played_{current_season}'] >= 1]
     unrostered = unrostered.sort_values('Last Game', ascending=False)
     unrostered.to_html(f"scr/{fname}_unrostered.html")
     unrostered.to_csv(f"scr/{fname}_unrostered.csv")
@@ -74,7 +75,8 @@ def calculate_advs(weekly_data, is_ppr, league_name):
         row = [k, position_lookup[k], *player_adv[k], *player_adv_2023[k]]
         table.append(row)
     player_adv_df = pd.DataFrame(table, columns=['Name', 'position', 'Last_6_Average', 'variance', 'games_played', 'Last Game',
-                                                 'variance_2024', 'games_played_2024'])
+                                                 f'variance_{current_season}',
+                                                 f'games_played_{current_season}'])
     player_adv_df = player_adv_df.sort_values('Last Game', ascending=False)
     player_adv_df['rank'] = [x + 1 for x in range(len(player_adv_df))]
     add_rostered_players(player_adv_df, league_name)
@@ -91,13 +93,13 @@ def upload_sheets():
         df = pd.read_csv(csv_name)
         data = [df.columns.values.tolist()] + df.values.tolist()
         worksheet_name = f'Unrostered {nonce}'
-        worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=str(len(data)), cols=str(len(data[0])))
+        worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=len(data), cols=len(data[0]))
         worksheet.update(data)
 
 
 def main():
     save_rosters()
-    weekly_data = nfl.import_weekly_data(years=[2023, 2024])
+    weekly_data = nfl.import_weekly_data(years=[current_season-1, current_season])
     weekly_data = weekly_data.sort_values('fantasy_points', ascending=False)
     weekly_data = weekly_data.sort_values(['season', 'week'])
     weekly_data['half_ppr'] = [(x + y) / 2 for x, y in
