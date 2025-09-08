@@ -7,7 +7,7 @@ import gspread
 
 from ffootball.get_rosters import get_secrets, save_rosters, strip_title_from_name
 
-current_season = 2024
+current_season = 2025
 
 def bootstrap_median(weekly_data, score_column, player_name, window=6):
     player_df = weekly_data[weekly_data['player_display_name'] == player_name]
@@ -92,7 +92,7 @@ def upload_sheets():
         csv_name = f"scr/{league['league_name']}_unrostered.csv"
         df = pd.read_csv(csv_name)
         data = [df.columns.values.tolist()] + df.values.tolist()
-        worksheet_name = f'Unrostered {nonce}'
+        worksheet_name = f'Unrostered {league["league_name"]} {nonce}'
         worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=len(data), cols=len(data[0]))
         worksheet.update(data)
 

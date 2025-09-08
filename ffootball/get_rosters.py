@@ -12,6 +12,8 @@ def strip_title_from_name(s):
     :param s: name
     :return: removes jr and III from s
     """
+    if s is None:
+        return ""
     s = s.replace(' Jr.', '')
     s = s.replace(" III", '')
     s = s.replace(" II", '')
